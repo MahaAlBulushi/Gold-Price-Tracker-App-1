@@ -1,0 +1,77 @@
+<div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6 sm:p-8">
+
+  <!-- Karat selector -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    @for (karat of karats; track karat) {
+      <button
+        type="button"
+        (click)="selectKarat(karat)"
+        class="px-4 py-2 rounded-lg text-sm font-medium border border-[#c2cdff] transition-colors"
+        [class.text-white]="selectedKarat === karat"
+        [style.background]="selectedKarat === karat ? '#16407b' : '#ffffff'"
+        [style.color]="selectedKarat === karat ? '#ffffff' : '#15325f'"
+      >
+        {{ karatLabel(karat) }}
+      </button>
+    }
+  </div>
+
+  <!-- Summary cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="rounded-xl border border-[#c2cdff] p-4 text-center">
+      <p class="text-xs text-gray-500">السعر الحالي</p>
+      <p class="text-2xl font-bold text-[#15325f] mt-1">{{ currentPrice.toFixed(3) }} ر.ع</p>
+    </div>
+    <div class="rounded-xl border border-[#c2cdff] p-4 text-center">
+      <p class="text-xs text-gray-500">أعلى سعر خلال 30 يومًا</p>
+      <p class="text-2xl font-bold text-[#15325f] mt-1">{{ highestPrice.toFixed(3) }} ر.ع</p>
+    </div>
+    <div class="rounded-xl border border-[#c2cdff] p-4 text-center">
+      <p class="text-xs text-gray-500">أقل سعر خلال 30 يومًا</p>
+      <p class="text-2xl font-bold text-[#15325f] mt-1">{{ lowestPrice.toFixed(3) }} ر.ع</p>
+    </div>
+  </div>
+
+  <!-- Line chart -->
+  <svg
+    [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight"
+    class="w-full h-48"
+    preserveAspectRatio="none"
+  >
+    <polyline
+      [attr.points]="chartPoints"
+      fill="none"
+      stroke="#1cad8d"
+      stroke-width="2"
+    />
+    @for (dot of chartDots; track dot.x) {
+      <circle [attr.cx]="dot.x" [attr.cy]="dot.y" r="3" fill="#16407b">
+        <title>{{ dot.date }} &#10;{{ karatLabel(selectedKarat) }} &#10;{{ dot.price.toFixed(3) }} ر.ع / جرام</title>
+      </circle>
+    }
+  </svg>
+  <div class="flex justify-between text-xs text-gray-400 mt-1">
+    <span>{{ firstDate }}</span>
+    <span>ر.ع / جرام</span>
+    <span>{{ lastDate }}</span>
+  </div>
+
+  <!-- Price movement -->
+  <div class="grid grid-cols-3 gap-4 mt-8 border-t border-[#c2cdff] pt-6 text-center">
+    <div>
+      <p class="text-xs text-gray-500">الحالي</p>
+      <p class="text-lg font-semibold text-[#15325f]">{{ currentPrice.toFixed(3) }}</p>
+    </div>
+    <div>
+      <p class="text-xs text-gray-500">السابق</p>
+      <p class="text-lg font-semibold text-[#15325f]">{{ previousPrice.toFixed(3) }}</p>
+    </div>
+    <div>
+      <p class="text-xs text-gray-500">التغير</p>
+      <p class="text-lg font-semibold text-[#15325f]">
+        {{ priceChange >= 0 ? '+' : '' }}{{ priceChange.toFixed(3) }} ر.ع
+      </p>
+      <p class="text-xs text-[#1cad8d]">{{ movementArrow }} {{ movementLabel }}</p>
+    </div>
+  </div>
+</div>

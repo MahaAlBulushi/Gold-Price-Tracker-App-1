@@ -1,0 +1,1461 @@
+++ b/.postcssrc.json
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  }
+}
+++ b/README.md
+# GoldProject
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+
+## Development server
+
+To start a local development server, run:
+
+```bash
+ng serve
+```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+
+```bash
+ng generate component component-name
+```
+
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+++ b/angular.json
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm",
+    "analytics": "d800a45d-1f36-4ddf-86cf-11ab07f67f12"
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "gold-project": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "src/server.ts"
+            }
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "gold-project:build:production"
+            },
+            "development": {
+              "buildTarget": "gold-project:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        }
+      }
+    }
+  }
+}
+++ b/package.json
+{
+  "name": "gold-project",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "serve:ssr:gold-project": "node dist/gold-project/server/server.mjs"
+  },
+  "private": true,
+  "packageManager": "npm@10.9.8",
+  "dependencies": {
+    "@angular/common": "^22.1.0",
+    "@angular/compiler": "^22.1.0",
+    "@angular/core": "^22.1.0",
+    "@angular/forms": "^22.1.0",
+    "@angular/platform-browser": "^22.1.0",
+    "@angular/platform-server": "^22.1.0",
+    "@angular/router": "^22.1.0",
+    "@angular/ssr": "^22.1.8",
+    "express": "^5.1.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.1.8",
+    "@angular/cli": "^22.1.8",
+    "@angular/compiler-cli": "^22.1.0",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/express": "^5.0.1",
+    "@types/node": "^20.17.19",
+    "jsdom": "^28.0.0",
+    "postcss": "^8.5.3",
+    "prettier": "^3.8.1",
+    "tailwindcss": "^4.1.12",
+    "typescript": "~6.0.2",
+    "vitest": "^4.0.8"
+  }
+}
+++ b/src/app/app.config.server.ts
+import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
+import { provideServerRendering, withRoutes } from '@angular/ssr';
+import { appConfig } from './app.config';
+import { serverRoutes } from './app.routes.server';
+
+const serverConfig: ApplicationConfig = {
+  providers: [
+    provideServerRendering(withRoutes(serverRoutes))
+  ]
+};
+
+export const config = mergeApplicationConfig(appConfig, serverConfig);
+++ b/src/app/app.config.ts
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+import { provideClientHydration } from '@angular/platform-browser';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes), provideClientHydration()
+  ]
+};
+++ b/src/app/app.html
+<app-header />
+
+<main class="bg-[#fafafa] min-h-screen">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm text-[#15325f]/70">
+      <span>الرئيسية</span>
+      <span class="mx-1">/</span>
+      <span class="text-[#15325f] font-medium">أسعار الذهب في عُمان</span>
+    </nav>
+
+    <!-- Hero -->
+    <section
+      dir="rtl"
+      lang="ar"
+      class="relative overflow-hidden rounded-[24px] text-white"
+      style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);"
+    >
+      <!-- Decorative circles, kept on the left to balance the right-aligned text -->
+      <div class="absolute -top-14 -left-14 w-44 h-44 rounded-full bg-white/10"></div>
+      <div class="absolute top-12 left-10 w-20 h-20 rounded-full bg-[#c2cdff]/20 blur-sm"></div>
+
+      <div class="relative px-6 sm:px-10 lg:px-14 py-10 lg:py-12 text-right">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
+          سعر الذهب اليوم في عُمان
+        </h1>
+
+        <p class="mt-4 max-w-3xl text-base sm:text-lg leading-8 text-white/90">
+          تابع أسعار الذهب في عُمان لمختلف العيارات، واحسب قيمة الذهب بسهولة، واستعرض حركة الأسعار خلال آخر 30 يومًا.
+        </p>
+
+        <span class="inline-flex rounded-full bg-black/20 px-3 py-1 text-sm text-white mt-4">
+          تحديثات أسعار الذهب
+        </span>
+      </div>
+
+      <!-- Bottom information bar -->
+      <div class="relative border-t border-white/15 bg-black/10 px-6 sm:px-10 lg:px-14 py-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs sm:text-sm text-white/75">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-white/80"></span>
+            <span>آخر تحديث: اليوم</span>
+            <span>&bull;</span>
+            <span>السوق: عُمان</span>
+          </div>
+          <div>الأسعار المعروضة بالريال العُماني لكل جرام</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Today's gold prices -->
+  <section id="today-prices" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-[#15325f]">متوسط أسعار الذهب اليوم في عُمان</h2>
+    <p class="text-gray-500 mt-1">أسعار الذهب الحالية لمختلف العيارات بالريال العُماني لكل جرام</p>
+
+    @if (goldPrices.length === 0) {
+      <p class="mt-6 text-gray-400">لا توجد أسعار ذهب متاحة حاليًا.</p>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+        @for (gold of goldPrices; track gold.karat) {
+          <app-gold-price-card [karat]="gold.karat" [price]="gold.price" />
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Gold calculator -->
+  <section id="calculator" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h2 class="text-2xl font-bold text-[#15325f]">حاسبة الذهب</h2>
+    <p class="text-gray-500 mt-1 mb-6">اختر العيار والوزن لتقدير القيمة.</p>
+    <app-gold-calculator [goldPrices]="goldPrices" />
+  </section>
+
+  <!-- 30-day trend -->
+  <section id="trend" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h2 class="text-2xl font-bold text-[#15325f]">حركة أسعار الذهب</h2>
+    <p class="text-gray-500 mt-1 mb-6">حركة سعر الذهب خلال آخر 30 يومًا</p>
+    <app-gold-price-chart [history]="goldHistory" />
+  </section>
+
+  <!-- Price history table -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
+    <h2 class="text-2xl font-bold text-[#15325f]">سجل أسعار الذهب</h2>
+    <p class="text-gray-500 mt-1 mb-6">بيانات تجريبية لأسعار الذهب خلال آخر 30 يومًا بالريال العُماني لكل جرام</p>
+    <app-price-history [history]="goldHistory" />
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t border-[#c2cdff] py-8 text-center text-sm text-gray-500">
+  <p class="font-semibold text-[#15325f]">لوحة أسعار الذهب في عُمان</p>
+  <p class="mt-3 text-xs text-gray-400">© 2026 Maha Al Bulushi. جميع الحقوق محفوظة.</p>
+</footer>
+++ b/src/app/app.routes.server.ts
+import { RenderMode, ServerRoute } from '@angular/ssr';
+
+export const serverRoutes: ServerRoute[] = [
+  {
+    path: '**',
+    renderMode: RenderMode.Prerender
+  }
+];
+++ b/src/app/app.routes.ts
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [];
+++ b/src/app/app.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { App } from './app';
+
+describe('App', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [App],
+    })
+      .compileComponents();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it('should render title', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h1')?.textContent).toContain('سعر الذهب اليوم في عُمان');
+  });
+});
+++ b/src/app/app.ts
+import { Component, inject } from '@angular/core';
+import { Header } from './components/header/header';
+import { GoldPriceCard } from './components/gold-price-card/gold-price-card';
+import { GoldCalculator } from './components/gold-calculator/gold-calculator';
+import { GoldPriceChart } from './components/gold-price-chart/gold-price-chart';
+import { PriceHistory } from './components/price-history/price-history';
+import { GoldService } from './services/gold.service';
+import { GoldPrice, GoldHistory } from './models/gold.model';
+
+@Component({
+  imports: [Header, GoldPriceCard, GoldCalculator, GoldPriceChart, PriceHistory],
+  selector: 'app-root',
+  styleUrl: './app.css',
+  templateUrl: './app.html',
+})
+export class App {
+  // Workshop version: data comes from the local GoldService.
+  // Later, GoldService could fetch this from a real REST API instead.
+  private goldService = inject(GoldService);
+
+  goldPrices: GoldPrice[] = this.goldService.getPrices();
+  goldHistory: GoldHistory[] = this.goldService.getHistory();
+}
+++ b/src/app/components/gold-calculator/gold-calculator.css
+/* Component-specific styles for GoldCalculator (most styling is done with Tailwind classes in the template) */
+++ b/src/app/components/gold-calculator/gold-calculator.html
+<div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6 sm:p-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Inputs -->
+    <div class="space-y-5">
+      <div>
+        <label for="karat" class="block text-sm font-medium text-[#15325f] mb-1">عيار الذهب</label>
+        <select
+          id="karat"
+          class="w-full rounded-lg border border-[#c2cdff] px-3 py-2 text-[#15325f] focus:outline-none focus:ring-2 focus:ring-[#1057a8]"
+          [(ngModel)]="selectedKarat"
+        >
+          @for (gold of goldPrices; track gold.karat) {
+            <option [value]="gold.karat">{{ karatLabel(gold.karat) }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label for="grams" class="block text-sm font-medium text-[#15325f] mb-1">الوزن (جرام)</label>
+        <input
+          id="grams"
+          type="number"
+          min="0"
+          class="w-full rounded-lg border border-[#c2cdff] px-3 py-2 text-[#15325f] focus:outline-none focus:ring-2 focus:ring-[#1057a8]"
+          [(ngModel)]="grams"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#16407b] text-white font-medium hover:bg-[#1057a8]"
+        (click)="calculateGoldValue()"
+      >
+        احسب القيمة
+      </button>
+    </div>
+
+    <!-- Result -->
+    @if (hasCalculated) {
+      <div
+        class="rounded-2xl p-6 text-white flex flex-col justify-center text-center"
+        style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);"
+      >
+        <p class="text-sm opacity-90">القيمة التقديرية للذهب</p>
+        <p class="text-sm opacity-90 mt-1">{{ grams }} جرام من {{ karatLabel(selectedKarat) }}</p>
+        <p class="text-4xl font-bold mt-2">{{ totalValue.toFixed(3) }} ر.ع</p>
+        <p class="text-sm opacity-90 mt-2">{{ grams }} &times; {{ selectedPrice.toFixed(3) }} ر.ع</p>
+      </div>
+    } @else {
+      <div class="rounded-2xl border-2 border-dashed border-[#c2cdff] p-6 flex items-center justify-center text-gray-400 text-sm">
+        اختر العيار والوزن ثم اضغط على احسب لمعرفة القيمة التقديرية.
+      </div>
+    }
+  </div>
+</div>
+++ b/src/app/components/gold-calculator/gold-calculator.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { GoldCalculator } from './gold-calculator';
+
+describe('GoldCalculator', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [GoldCalculator],
+    }).compileComponents();
+  });
+
+  it('should create', () => {
+    const fixture = TestBed.createComponent(GoldCalculator);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should calculate the gold value for the selected karat and weight', () => {
+    const fixture = TestBed.createComponent(GoldCalculator);
+    const component = fixture.componentInstance;
+    component.goldPrices = [{ karat: '21K', price: 47.1 }];
+    component.selectedKarat = '21K';
+    component.grams = 10;
+
+    component.calculateGoldValue();
+
+    expect(component.totalValue).toBe(471);
+    expect(component.hasCalculated).toBe(true);
+  });
+});
+++ b/src/app/components/gold-calculator/gold-calculator.ts
+import { Component, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { GoldPrice } from '../../models/gold.model';
+
+@Component({
+  selector: 'app-gold-calculator',
+  templateUrl: './gold-calculator.html',
+  styleUrl: './gold-calculator.css',
+  imports: [FormsModule],
+})
+export class GoldCalculator {
+  @Input() goldPrices: GoldPrice[] = [];
+
+  // The karat currently selected by the user
+  selectedKarat = '21K';
+  grams = 10;
+  totalValue = 0;
+  hasCalculated = false;
+
+  calculateGoldValue() {
+    const gold = this.goldPrices.find((item) => item.karat === this.selectedKarat);
+
+    if (gold) {
+      this.totalValue = gold.price * this.grams;
+      this.hasCalculated = true;
+    }
+  }
+
+  // Used in the template to show "10 x 47.100 OMR"
+  get selectedPrice(): number {
+    const gold = this.goldPrices.find((item) => item.karat === this.selectedKarat);
+    return gold ? gold.price : 0;
+  }
+
+  // Turns '21K' into the Arabic label 'عيار 21'
+  karatLabel(karat: string): string {
+    return 'عيار ' + karat.replace('K', '');
+  }
+}
+++ b/src/app/components/gold-price-card/gold-price-card.css
+/* Component-specific styles for GoldPriceCard (most styling is done with Tailwind classes in the template) */
+++ b/src/app/components/gold-price-card/gold-price-card.html
+<div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6 text-center hover:shadow-md transition-shadow">
+  <p class="text-sm font-semibold text-[#1cad8d]">{{ karatLabel }}</p>
+  <p class="text-3xl font-bold text-[#15325f] mt-2">{{ price.toFixed(3) }}</p>
+  <p class="text-sm text-gray-500 mt-1">ر.ع</p>
+  <p class="text-xs text-gray-400">لكل جرام</p>
+</div>
+++ b/src/app/components/gold-price-card/gold-price-card.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { GoldPriceCard } from './gold-price-card';
+
+describe('GoldPriceCard', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [GoldPriceCard],
+    }).compileComponents();
+  });
+
+  it('should create', () => {
+    const fixture = TestBed.createComponent(GoldPriceCard);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should show the Arabic karat label and formatted price', () => {
+    const fixture = TestBed.createComponent(GoldPriceCard);
+    fixture.componentInstance.karat = '24K';
+    fixture.componentInstance.price = 53.84;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('عيار 24');
+    expect(compiled.textContent).toContain('53.840');
+  });
+});
+++ b/src/app/components/gold-price-card/gold-price-card.ts
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-gold-price-card',
+  templateUrl: './gold-price-card.html',
+  styleUrl: './gold-price-card.css',
+  imports: [],
+})
+export class GoldPriceCard {
+  // Data comes in from the parent component through these inputs
+  @Input() karat = '';
+  @Input() price = 0;
+
+  // Turns '18K' into the Arabic label 'عيار 18'
+  get karatLabel(): string {
+    return 'عيار ' + this.karat.replace('K', '');
+  }
+}
+++ b/src/app/components/gold-price-chart/gold-price-chart.css
+/* Component-specific styles for GoldPriceChart (most styling is done with Tailwind classes in the template) */
+++ b/src/app/components/gold-price-chart/gold-price-chart.html
+<div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6 sm:p-8">
+
+  <!-- Karat selector -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    @for (karat of karats; track karat) {
+      <button
+        type="button"
+        (click)="selectKarat(karat)"
+        class="px-4 py-2 rounded-lg text-sm font-medium border border-[#c2cdff] transition-colors"
+        [class.text-white]="selectedKarat === karat"
+        [style.background]="selectedKarat === karat ? '#16407b' : '#ffffff'"
+        [style.color]="selectedKarat === karat ? '#ffffff' : '#15325f'"
+      >
+        {{ karatLabel(karat) }}
+      </button>
+    }
+  </div>
+
+  <!-- Summary cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="rounded-xl border border-[#c2cdff] p-4 text-center">
+      <p class="text-xs text-gray-500">السعر الحالي</p>
+      <p class="text-2xl font-bold text-[#15325f] mt-1">{{ currentPrice.toFixed(3) }} ر.ع</p>
+    </div>
+    <div class="rounded-xl border border-[#c2cdff] p-4 text-center">
+      <p class="text-xs text-gray-500">أعلى سعر خلال 30 يومًا</p>
+      <p class="text-2xl font-bold text-[#15325f] mt-1">{{ highestPrice.toFixed(3) }} ر.ع</p>
+    </div>
+    <div class="rounded-xl border border-[#c2cdff] p-4 text-center">
+      <p class="text-xs text-gray-500">أقل سعر خلال 30 يومًا</p>
+      <p class="text-2xl font-bold text-[#15325f] mt-1">{{ lowestPrice.toFixed(3) }} ر.ع</p>
+    </div>
+  </div>
+
+  <!-- Line chart -->
+  <svg
+    [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight"
+    class="w-full h-48"
+    preserveAspectRatio="none"
+  >
+    <polyline
+      [attr.points]="chartPoints"
+      fill="none"
+      stroke="#1cad8d"
+      stroke-width="2"
+    />
+    @for (dot of chartDots; track dot.x) {
+      <circle [attr.cx]="dot.x" [attr.cy]="dot.y" r="3" fill="#16407b">
+        <title>{{ dot.date }} &#10;{{ karatLabel(selectedKarat) }} &#10;{{ dot.price.toFixed(3) }} ر.ع / جرام</title>
+      </circle>
+    }
+  </svg>
+  <div class="flex justify-between text-xs text-gray-400 mt-1">
+    <span>{{ firstDate }}</span>
+    <span>ر.ع / جرام</span>
+    <span>{{ lastDate }}</span>
+  </div>
+
+  <!-- Price movement -->
+  <div class="grid grid-cols-3 gap-4 mt-8 border-t border-[#c2cdff] pt-6 text-center">
+    <div>
+      <p class="text-xs text-gray-500">الحالي</p>
+      <p class="text-lg font-semibold text-[#15325f]">{{ currentPrice.toFixed(3) }}</p>
+    </div>
+    <div>
+      <p class="text-xs text-gray-500">السابق</p>
+      <p class="text-lg font-semibold text-[#15325f]">{{ previousPrice.toFixed(3) }}</p>
+    </div>
+    <div>
+      <p class="text-xs text-gray-500">التغير</p>
+      <p class="text-lg font-semibold text-[#15325f]">
+        {{ priceChange >= 0 ? '+' : '' }}{{ priceChange.toFixed(3) }} ر.ع
+      </p>
+      <p class="text-xs text-[#1cad8d]">{{ movementArrow }} {{ movementLabel }}</p>
+    </div>
+  </div>
+</div>
+++ b/src/app/components/gold-price-chart/gold-price-chart.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { GoldPriceChart } from './gold-price-chart';
+
+describe('GoldPriceChart', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [GoldPriceChart],
+    }).compileComponents();
+  });
+
+  it('should create', () => {
+    const fixture = TestBed.createComponent(GoldPriceChart);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should calculate current, highest, and lowest prices for the selected karat', () => {
+    const fixture = TestBed.createComponent(GoldPriceChart);
+    const component = fixture.componentInstance;
+    component.history = [
+      { date: '2026-09-20', price18k: 40, price21k: 47, price22k: 49, price24k: 53 },
+      { date: '2026-09-21', price18k: 41, price21k: 48, price22k: 50, price24k: 55 },
+      { date: '2026-09-22', price18k: 40.5, price21k: 47.5, price22k: 49.5, price24k: 54 },
+    ];
+    component.selectedKarat = '24K';
+
+    expect(component.currentPrice).toBe(54);
+    expect(component.previousPrice).toBe(55);
+    expect(component.highestPrice).toBe(55);
+    expect(component.lowestPrice).toBe(53);
+  });
+});
+++ b/src/app/components/gold-price-chart/gold-price-chart.ts
+import { Component, Input } from '@angular/core';
+import { GoldHistory } from '../../models/gold.model';
+
+@Component({
+  selector: 'app-gold-price-chart',
+  templateUrl: './gold-price-chart.html',
+  styleUrl: './gold-price-chart.css',
+  imports: [],
+})
+export class GoldPriceChart {
+  @Input() history: GoldHistory[] = [];
+
+  // The karat currently shown on the chart
+  selectedKarat = '24K';
+  karats = ['18K', '21K', '22K', '24K'];
+
+  // Size of the drawing area used for the SVG line chart
+  chartWidth = 600;
+  chartHeight = 200;
+
+  selectKarat(karat: string) {
+    this.selectedKarat = karat;
+  }
+
+  // Reads the right price field from a history day, based on the selected karat
+  private getKaratPrice(day: GoldHistory): number {
+    if (this.selectedKarat === '18K') return day.price18k;
+    if (this.selectedKarat === '21K') return day.price21k;
+    if (this.selectedKarat === '22K') return day.price22k;
+    return day.price24k;
+  }
+
+  get selectedPrices(): number[] {
+    return this.history.map((day) => this.getKaratPrice(day));
+  }
+
+  get currentPrice(): number {
+    const prices = this.selectedPrices;
+    return prices[prices.length - 1] ?? 0;
+  }
+
+  get previousPrice(): number {
+    const prices = this.selectedPrices;
+    return prices[prices.length - 2] ?? 0;
+  }
+
+  get highestPrice(): number {
+    return Math.max(...this.selectedPrices);
+  }
+
+  get lowestPrice(): number {
+    return Math.min(...this.selectedPrices);
+  }
+
+  get priceChange(): number {
+    return this.currentPrice - this.previousPrice;
+  }
+
+  get movementLabel(): string {
+    if (this.priceChange > 0) return 'ارتفاع';
+    if (this.priceChange < 0) return 'انخفاض';
+    return 'لا تغيير';
+  }
+
+  get movementArrow(): string {
+    if (this.priceChange > 0) return '↑';
+    if (this.priceChange < 0) return '↓';
+    return '→';
+  }
+
+  // Turns the 30 prices into "x,y" pairs that an SVG polyline can draw
+  get chartPoints(): string {
+    const prices = this.selectedPrices;
+    const max = this.highestPrice;
+    const min = this.lowestPrice;
+    const range = max - min || 1;
+    const stepX = this.chartWidth / (prices.length - 1);
+
+    return prices
+      .map((price, index) => {
+        const x = index * stepX;
+        const y = this.chartHeight - ((price - min) / range) * this.chartHeight;
+        return `${x},${y}`;
+      })
+      .join(' ');
+  }
+
+  // One dot per day, used to show tooltips on hover
+  get chartDots() {
+    const prices = this.selectedPrices;
+    const max = this.highestPrice;
+    const min = this.lowestPrice;
+    const range = max - min || 1;
+    const stepX = this.chartWidth / (prices.length - 1);
+
+    return this.history.map((day, index) => {
+      const price = prices[index];
+      return {
+        x: index * stepX,
+        y: this.chartHeight - ((price - min) / range) * this.chartHeight,
+        date: this.formatDate(day.date),
+        price,
+      };
+    });
+  }
+
+  get firstDate(): string {
+    return this.history.length ? this.formatDate(this.history[0].date) : '';
+  }
+
+  get lastDate(): string {
+    return this.history.length ? this.formatDate(this.history[this.history.length - 1].date) : '';
+  }
+
+  // Turns "2026-09-22" into the friendlier "Sep 22"
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  // Turns '24K' into the Arabic label 'عيار 24'
+  karatLabel(karat: string): string {
+    return 'عيار ' + karat.replace('K', '');
+  }
+}
+++ b/src/app/components/header/header.css
+/* Component-specific styles for Header (most styling is done with Tailwind classes in the template) */
+++ b/src/app/components/header/header.html
+<header class="bg-white border-b border-[#c2cdff] sticky top-0 z-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <img
+        src="gold.jpg"
+        alt="شعار الذهب العُماني"
+        class="w-9 h-9 rounded-full object-cover"
+      />
+      <span class="text-lg font-bold text-[#15325f]">الذهب العُماني</span>
+    </div>
+
+    <!-- Simple nav links, no hamburger menu needed for a small dashboard -->
+    <nav class="hidden sm:flex items-center gap-6 text-sm font-medium text-[#15325f]">
+      <a href="#today-prices" class="hover:text-[#1057a8]">أسعار الذهب</a>
+      <a href="#calculator" class="hover:text-[#1057a8]">حاسبة الذهب</a>
+      <a href="#trend" class="hover:text-[#1057a8]">آخر 30 يومًا</a>
+    </nav>
+
+    <span class="text-xs font-medium px-3 py-1 rounded-full bg-[#c2cdff] text-[#15325f]">
+      بيانات تجريبية
+    </span>
+  </div>
+</header>
+++ b/src/app/components/header/header.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { Header } from './header';
+
+describe('Header', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Header],
+    }).compileComponents();
+  });
+
+  it('should create', () => {
+    const fixture = TestBed.createComponent(Header);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should show the brand name', () => {
+    const fixture = TestBed.createComponent(Header);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('الذهب العُماني');
+  });
+});
+++ b/src/app/components/header/header.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-header',
+  templateUrl: './header.html',
+  styleUrl: './header.css',
+  imports: [],
+})
+export class Header {}
+++ b/src/app/components/price-history/price-history.css
+/* Component-specific styles for PriceHistory (most styling is done with Tailwind classes in the template) */
+++ b/src/app/components/price-history/price-history.html
+<div class="bg-white rounded-2xl border border-[#c2cdff] shadow-md hover:shadow-lg transition-shadow p-6 sm:p-8">
+  <div class="overflow-x-auto rounded-xl border border-[#c2cdff]/40 shadow-inner">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr
+          class="text-right text-white"
+          style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);"
+        >
+          <th class="py-3 px-4 font-semibold">التاريخ</th>
+          <th class="py-3 px-4 font-semibold">عيار 18</th>
+          <th class="py-3 px-4 font-semibold">عيار 21</th>
+          <th class="py-3 px-4 font-semibold">عيار 22</th>
+          <th class="py-3 px-4 font-semibold">عيار 24</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (day of reversedHistory; track day.date) {
+          <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa] hover:bg-[#c2cdff]/20 transition-colors">
+            <td class="py-3 px-4 text-[#15325f] font-semibold">{{ formatDate(day.date) }}</td>
+            <td class="py-3 px-4 text-gray-600">{{ day.price18k.toFixed(3) }} ر.ع</td>
+            <td class="py-3 px-4 text-gray-600">{{ day.price21k.toFixed(3) }} ر.ع</td>
+            <td class="py-3 px-4 text-gray-600">{{ day.price22k.toFixed(3) }} ر.ع</td>
+            <td class="py-3 px-4 font-semibold text-[#1cad8d]">{{ day.price24k.toFixed(3) }} ر.ع</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+++ b/src/app/components/price-history/price-history.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { PriceHistory } from './price-history';
+
+describe('PriceHistory', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [PriceHistory],
+    }).compileComponents();
+  });
+
+  it('should create', () => {
+    const fixture = TestBed.createComponent(PriceHistory);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should show the most recent day first', () => {
+    const fixture = TestBed.createComponent(PriceHistory);
+    const component = fixture.componentInstance;
+    component.history = [
+      { date: '2026-09-21', price18k: 40, price21k: 47, price22k: 49, price24k: 53 },
+      { date: '2026-09-22', price18k: 41, price21k: 48, price22k: 50, price24k: 54 },
+    ];
+
+    expect(component.reversedHistory[0].date).toBe('2026-09-22');
+  });
+});
+++ b/src/app/components/price-history/price-history.ts
+import { Component, Input } from '@angular/core';
+import { GoldHistory } from '../../models/gold.model';
+
+@Component({
+  selector: 'app-price-history',
+  templateUrl: './price-history.html',
+  styleUrl: './price-history.css',
+  imports: [],
+})
+export class PriceHistory {
+  @Input() history: GoldHistory[] = [];
+
+  // Shows the most recent day first
+  get reversedHistory(): GoldHistory[] {
+    return [...this.history].reverse();
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+}
+++ b/src/app/data/gold-data.ts
+import { GoldHistory, GoldPrice } from '../models/gold.model';
+
+// Demo Data: these values are for workshop purposes only, not real market prices.
+// Today's gold prices per gram, in OMR.
+export const GOLD_PRICES: GoldPrice[] = [
+  { karat: '18K', price: 40.380 },
+  { karat: '21K', price: 47.100 },
+  { karat: '22K', price: 49.310 },
+  { karat: '24K', price: 53.840 },
+];
+
+// Demo Data: 30 days of historical prices, oldest first, today last.
+export const GOLD_HISTORY: GoldHistory[] = [
+  { date: '2026-08-24', price18k: 39.735, price21k: 46.358, price22k: 48.565, price24k: 52.980 },
+  { date: '2026-08-25', price18k: 39.638, price21k: 46.244, price22k: 48.446, price24k: 52.850 },
+  { date: '2026-08-26', price18k: 39.158, price21k: 45.684, price22k: 47.859, price24k: 52.210 },
+  { date: '2026-08-27', price18k: 39.360, price21k: 45.920, price22k: 48.107, price24k: 52.480 },
+  { date: '2026-08-28', price18k: 39.720, price21k: 46.340, price22k: 48.547, price24k: 52.960 },
+  { date: '2026-08-29', price18k: 39.983, price21k: 46.646, price22k: 48.868, price24k: 53.310 },
+  { date: '2026-08-30', price18k: 40.260, price21k: 46.990, price22k: 49.207, price24k: 53.680 },
+  { date: '2026-08-31', price18k: 40.515, price21k: 47.268, price22k: 49.518, price24k: 54.020 },
+  { date: '2026-09-01', price18k: 40.808, price21k: 47.609, price22k: 49.876, price24k: 54.410 },
+  { date: '2026-09-02', price18k: 41.085, price21k: 47.933, price22k: 50.215, price24k: 54.780 },
+  { date: '2026-09-03', price18k: 41.340, price21k: 48.230, price22k: 50.527, price24k: 55.120 },
+  { date: '2026-09-04', price18k: 41.580, price21k: 48.510, price22k: 50.820, price24k: 55.440 },
+  { date: '2026-09-05', price18k: 41.445, price21k: 48.353, price22k: 50.655, price24k: 55.260 },
+  { date: '2026-09-06', price18k: 41.235, price21k: 48.108, price22k: 50.398, price24k: 54.980 },
+  { date: '2026-09-07', price18k: 40.988, price21k: 47.819, price22k: 50.096, price24k: 54.650 },
+  { date: '2026-09-08', price18k: 40.740, price21k: 47.530, price22k: 49.793, price24k: 54.320 },
+  { date: '2026-09-09', price18k: 40.508, price21k: 47.259, price22k: 49.509, price24k: 54.010 },
+  { date: '2026-09-10', price18k: 40.335, price21k: 47.058, price22k: 49.298, price24k: 53.780 },
+  { date: '2026-09-11', price18k: 40.155, price21k: 46.848, price22k: 49.078, price24k: 53.540 },
+  { date: '2026-09-12', price18k: 39.983, price21k: 46.646, price22k: 48.868, price24k: 53.310 },
+  { date: '2026-09-13', price18k: 39.810, price21k: 46.445, price22k: 48.657, price24k: 53.080 },
+  { date: '2026-09-14', price18k: 39.705, price21k: 46.323, price22k: 48.528, price24k: 52.940 },
+  { date: '2026-09-15', price18k: 39.863, price21k: 46.506, price22k: 48.721, price24k: 53.150 },
+  { date: '2026-09-16', price18k: 40.065, price21k: 46.743, price22k: 48.968, price24k: 53.420 },
+  { date: '2026-09-17', price18k: 40.260, price21k: 46.990, price22k: 49.207, price24k: 53.680 },
+  { date: '2026-09-18', price18k: 40.433, price21k: 47.171, price22k: 49.418, price24k: 53.910 },
+  { date: '2026-09-19', price18k: 40.613, price21k: 47.381, price22k: 49.638, price24k: 54.150 },
+  { date: '2026-09-20', price18k: 40.485, price21k: 47.233, price22k: 49.482, price24k: 53.980 },
+  { date: '2026-09-21', price18k: 40.320, price21k: 47.040, price22k: 49.240, price24k: 53.750 },
+  { date: '2026-09-22', price18k: 40.380, price21k: 47.100, price22k: 49.310, price24k: 53.840 },
+];
+++ b/src/app/models/gold.model.ts
+// A single karat's price for today, e.g. { karat: '24K', price: 53.840 }
+export interface GoldPrice {
+  karat: string;
+  price: number;
+}
+
+// One day of historical prices for all four karats
+export interface GoldHistory {
+  date: string;
+  price18k: number;
+  price21k: number;
+  price22k: number;
+  price24k: number;
+}
+++ b/src/app/services/gold.service.ts
+import { Injectable } from '@angular/core';
+import { GOLD_HISTORY, GOLD_PRICES } from '../data/gold-data';
+
+// Today this service just returns local demo data.
+// Later, these methods could call HttpClient to fetch a real REST API instead,
+// without any component needing to change.
+@Injectable({
+  providedIn: 'root',
+})
+export class GoldService {
+  getPrices() {
+    return GOLD_PRICES;
+  }
+
+  getHistory() {
+    return GOLD_HISTORY;
+  }
+}
+++ b/src/index.html
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>لوحة أسعار الذهب في عُمان</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
+++ b/src/main.server.ts
+import { BootstrapContext, bootstrapApplication } from '@angular/platform-browser';
+import { App } from './app/app';
+import { config } from './app/app.config.server';
+
+const bootstrap = (context: BootstrapContext) =>
+    bootstrapApplication(App, config, context);
+
+export default bootstrap;
+++ b/src/main.ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { App } from './app/app';
+
+bootstrapApplication(App, appConfig)
+  .catch((err) => console.error(err));
+++ b/src/server.ts
+import {
+  AngularNodeAppEngine,
+  createNodeRequestHandler,
+  isMainModule,
+  writeResponseToNodeResponse,
+} from '@angular/ssr/node';
+import express from 'express';
+import { join } from 'node:path';
+
+const browserDistFolder = join(import.meta.dirname, '../browser');
+
+const app = express();
+const angularApp = new AngularNodeAppEngine();
+
+/**
+ * Example Express Rest API endpoints can be defined here.
+ * Uncomment and define endpoints as necessary.
+ *
+ * Example:
+ * ```ts
+ * app.get('/api/{*splat}', (req, res) => {
+ *   // Handle API request
+ * });
+ * ```
+ */
+
+/**
+ * Serve static files from /browser
+ */
+app.use(
+  express.static(browserDistFolder, {
+    maxAge: '1y',
+    index: false,
+    redirect: false,
+  }),
+);
+
+/**
+ * Handle all other requests by rendering the Angular application.
+ */
+app.use((req, res, next) => {
+  angularApp
+    .handle(req)
+    .then((response) =>
+      response ? writeResponseToNodeResponse(response, res) : next(),
+    )
+    .catch(next);
+});
+
+/**
+ * Start the server if this module is the main entry point, or it is ran via PM2.
+ * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
+ */
+if (isMainModule(import.meta.url) || process.env['pm_id']) {
+  const port = process.env['PORT'] || 4000;
+  app.listen(port, (error) => {
+    if (error) {
+      throw error;
+    }
+
+    console.log(`Node Express server listening on http://localhost:${port}`);
+  });
+}
+
+/**
+ * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
+ */
+export const reqHandler = createNodeRequestHandler(app);
+++ b/src/styles.css
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+++ b/trainee-assignment.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trainee Assignment — Rebuild the Oman Gold Price Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#fafafa] text-[#15325f] antialiased">
+
+  <!-- Page header -->
+  <header class="bg-white border-b border-[#c2cdff] sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-9 h-9 rounded-full bg-[#16407b] text-white flex items-center justify-center font-bold">A</span>
+        <span class="text-lg font-bold">Your Assignment</span>
+      </div>
+      <span class="text-xs font-medium px-3 py-1 rounded-full bg-[#c2cdff] text-[#15325f]">
+        Angular + Tailwind CSS
+      </span>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden rounded-[24px] text-white"
+      style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);">
+      <div class="absolute -top-14 -right-14 w-44 h-44 rounded-full bg-white/10"></div>
+      <div class="relative px-6 sm:px-10 lg:px-14 py-10 lg:py-12">
+        <span class="inline-flex rounded-full bg-black/20 px-3 py-1 text-sm text-white mb-4">
+          Your next challenge
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-bold leading-tight">
+          Hi, welcome to your assignment 👋
+        </h1>
+        <p class="mt-4 max-w-2xl text-base sm:text-lg leading-8 text-white/90">
+          For this task, we'd like you to build the <strong>Oman Gold Price Dashboard</strong> shown below
+          entirely from scratch. Take your time to explore it, understand how it's put together, then recreate
+          it yourself with clean, reusable, well-structured code. We're excited to see how you approach it!
+        </p>
+      </div>
+    </section>
+
+    <!-- 1. Aim of the Task -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">🎯 Aim of the Task</h2>
+      <p class="mt-3 text-gray-600 leading-7">
+        This task is designed to check how well you can look at an existing user interface, break it down into
+        reusable pieces, and rebuild it using clean Angular code. By the end, you should be able to demonstrate:
+      </p>
+      <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+        <li>Reading and understanding an existing UI without a written spec</li>
+        <li>Breaking a page down into logical, reusable components</li>
+        <li>Building with Angular and styling with Tailwind CSS</li>
+        <li>Writing clean, organized, and readable code</li>
+        <li>Creating a responsive layout that works on any screen size</li>
+      </ul>
+    </section>
+
+    <!-- 2. Task Description -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">📦 Task Description</h2>
+      <p class="mt-3 text-gray-600 leading-7">
+        You'll be rebuilding the <strong>Oman Gold Price Dashboard</strong> shown below, entirely from scratch,
+        using it only as a visual and functional reference. It's an <strong>Angular</strong> single-page
+        application styled with <strong>Tailwind CSS</strong> that displays gold prices in Oman, lets users
+        calculate the value of a given weight of gold, and shows a 30-day price history in both chart and table
+        form. The interface is written in Arabic and laid out right-to-left (RTL), so keep that in mind while
+        you rebuild it.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+        <div class="rounded-xl border border-[#c2cdff] p-4 bg-white text-center">
+          <p class="text-xs text-gray-500">Framework</p>
+          <p class="text-lg font-semibold mt-1">Angular</p>
+        </div>
+        <div class="rounded-xl border border-[#c2cdff] p-4 bg-white text-center">
+          <p class="text-xs text-gray-500">Styling</p>
+          <p class="text-lg font-semibold mt-1">Tailwind CSS</p>
+        </div>
+        <div class="rounded-xl border border-[#c2cdff] p-4 bg-white text-center">
+          <p class="text-xs text-gray-500">Language / Direction</p>
+          <p class="text-lg font-semibold mt-1">Arabic (RTL)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Requirements -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">✅ Requirements</h2>
+      <p class="mt-3 text-gray-600 leading-7">Your rebuilt app must include the following functionality:</p>
+      <ul class="mt-3 space-y-2 text-gray-600 text-sm">
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Display today's gold price for each karat: 18K, 21K, 22K, and 24K</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> A gold calculator: pick a karat and enter a weight in grams, then calculate the estimated total value</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> A 30-day price trend chart, switchable between karats, with current/highest/lowest summary stats</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> A price history table listing the last 30 days for all four karats</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Navigation links that scroll to each section of the page</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> All data can be static/sample data — no real API or backend is required</li>
+      </ul>
+    </section>
+
+    <!-- 4. UI Requirements -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">🧩 UI Requirements</h2>
+      <p class="mt-3 text-gray-600 leading-7">
+        The page should follow this basic layout, top to bottom:
+      </p>
+
+      <div class="space-y-6 mt-6">
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">1. Header / Navigation</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Sticky header with logo image and site name ("الذهب العُماني" / "Omani Gold")</li>
+            <li>Navigation links to the prices, calculator, and 30-day trend sections</li>
+            <li>A small badge label on the side (e.g. "Demo data")</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">2. Hero Banner</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Large gradient banner with a breadcrumb line above it</li>
+            <li>Heading, short description paragraph, and a small pill/badge</li>
+            <li>A bottom info bar inside the banner showing "last updated" and market info</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">3. Today's Gold Prices</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Section title and subtitle</li>
+            <li>A responsive grid of <strong>price cards</strong>, one per karat</li>
+            <li>Each card shows the karat label, the price, and the currency/unit</li>
+            <li>Build one reusable "price card" component and reuse it for every karat</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">4. Gold Calculator</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>A karat dropdown (select) and a weight-in-grams number input</li>
+            <li>A "Calculate" button</li>
+            <li>After clicking, show the estimated total value in a highlighted result card</li>
+            <li>Before calculating, show a placeholder/empty state instead</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">5. 30-Day Price Trend</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Buttons to switch between karats (18K / 21K / 22K / 24K)</li>
+            <li>Three summary cards: current price, highest price, and lowest price over 30 days</li>
+            <li>A simple line chart (an SVG polyline is enough) plotting the last 30 days of prices</li>
+            <li>A small stats row comparing current price, previous price, and the change between them</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">6. Price History Table</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>A table listing 30 days of history with columns: date, 18K, 21K, 22K, 24K</li>
+            <li>Striped/alternating row colors and a horizontal scroll on small screens</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">7. Footer</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Site name/title</li>
+            <li>Copyright line</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. Technical Requirements -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">🛠️ Technical Requirements</h2>
+      <ul class="mt-3 space-y-2 text-gray-600 text-sm">
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Build the app with <strong>Angular</strong>, styled with <strong>Tailwind CSS</strong></li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Follow a clean, organized project/folder structure</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Split the UI into reusable components (header, price card, calculator, chart, table, footer)</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Use clear, meaningful names for components, variables, and functions</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Avoid duplicating the same markup or logic — extract it into a shared component instead</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Keep styling organized and consistent using Tailwind utility classes</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Make the app responsive on desktop, tablet, and mobile</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Store sample data (prices and history) in a simple data file or service</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Make sure the project builds and runs without errors</li>
+      </ul>
+    </section>
+
+    <!-- 6. Expected Deliverables -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">📁 Expected Deliverables</h2>
+      <p class="mt-3 text-gray-600 leading-7">Please submit the following:</p>
+      <ol class="mt-3 space-y-2 text-gray-600 text-sm list-decimal pr-5">
+        <li>Complete source code of your rebuilt project</li>
+        <li>A <strong>README</strong> file with clear instructions to install and run the project</li>
+        <li>A link to your Git repository</li>
+        <li>Any images/icons or other assets you used</li>
+      </ol>
+    </section>
+
+    <!-- 7. Bonus Requirements -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">🌟 Bonus Requirements (Optional)</h2>
+      <p class="mt-3 text-gray-600 leading-7">
+        Want to go further? These are optional and not required to pass, but they're a great way to stand out:
+      </p>
+      <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+        <li>Add a light/dark mode toggle</li>
+        <li>Add simple loading or empty states with a short animation</li>
+        <li>Add a language toggle between Arabic (RTL) and English (LTR)</li>
+      </ul>
+    </section>
+
+    <!-- 8. Evaluation Criteria -->
+    <section class="mt-12 mb-16">
+      <h2 class="text-2xl font-bold">📝 Evaluation Criteria</h2>
+      <p class="mt-3 text-gray-600 leading-7">Your submission will be reviewed based on:</p>
+      <div class="overflow-x-auto rounded-2xl border border-[#c2cdff] mt-4 bg-white">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="text-left text-white" style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);">
+              <th class="py-3 px-4 font-semibold">Criteria</th>
+              <th class="py-3 px-4 font-semibold">What we're looking for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Completeness</td>
+              <td class="py-3 px-4 text-gray-600">All required sections and components are present</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Design similarity</td>
+              <td class="py-3 px-4 text-gray-600">Layout, spacing, colors, and typography match the reference closely</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Code structure & readability</td>
+              <td class="py-3 px-4 text-gray-600">Clean, organized, easy-to-follow code</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Component reusability</td>
+              <td class="py-3 px-4 text-gray-600">Shared UI is built once and reused, not duplicated</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Responsive design</td>
+              <td class="py-3 px-4 text-gray-600">Works well on desktop, tablet, and mobile</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Functionality</td>
+              <td class="py-3 px-4 text-gray-600">Calculator, karat switching, and chart/table all work correctly</td>
+            </tr>
+            <tr class="odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Overall quality</td>
+              <td class="py-3 px-4 text-gray-600">Runs without errors and feels polished</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-[#c2cdff] py-8 text-center text-sm text-gray-500">
+    <p class="font-semibold">Your Assignment — Rebuild the Oman Gold Price Dashboard</p>
+    <p class="mt-2 text-xs text-gray-400">Good luck! Reach out to your mentor if anything is unclear.</p>
+  </footer>
+
+</body>
+</html>
+++ b/tsconfig.app.json
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
+  ]
+}
+++ b/tsconfig.json
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}
+++ b/tsconfig.spec.json
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "vitest/globals"
+    ]
+  },
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.spec.ts"
+  ]
+}

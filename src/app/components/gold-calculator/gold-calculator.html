@@ -1,0 +1,56 @@
+<div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6 sm:p-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Inputs -->
+    <div class="space-y-5">
+      <div>
+        <label for="karat" class="block text-sm font-medium text-[#15325f] mb-1">عيار الذهب</label>
+        <select
+          id="karat"
+          class="w-full rounded-lg border border-[#c2cdff] px-3 py-2 text-[#15325f] focus:outline-none focus:ring-2 focus:ring-[#1057a8]"
+          [(ngModel)]="selectedKarat"
+        >
+          @for (gold of goldPrices; track gold.karat) {
+            <option [value]="gold.karat">{{ karatLabel(gold.karat) }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label for="grams" class="block text-sm font-medium text-[#15325f] mb-1">الوزن (جرام)</label>
+        <input
+          id="grams"
+          type="number"
+          min="0"
+          class="w-full rounded-lg border border-[#c2cdff] px-3 py-2 text-[#15325f] focus:outline-none focus:ring-2 focus:ring-[#1057a8]"
+          [(ngModel)]="grams"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#16407b] text-white font-medium hover:bg-[#1057a8]"
+        (click)="calculateGoldValue()"
+      >
+        احسب القيمة
+      </button>
+    </div>
+
+    <!-- Result -->
+    @if (hasCalculated) {
+      <div
+        class="rounded-2xl p-6 text-white flex flex-col justify-center text-center"
+        style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);"
+      >
+        <p class="text-sm opacity-90">القيمة التقديرية للذهب</p>
+        <p class="text-sm opacity-90 mt-1">{{ grams }} جرام من {{ karatLabel(selectedKarat) }}</p>
+        <p class="text-4xl font-bold mt-2">{{ totalValue.toFixed(3) }} ر.ع</p>
+        <p class="text-sm opacity-90 mt-2">{{ grams }} &times; {{ selectedPrice.toFixed(3) }} ر.ع</p>
+      </div>
+    } @else {
+      <div class="rounded-2xl border-2 border-dashed border-[#c2cdff] p-6 flex items-center justify-center text-gray-400 text-sm">
+        اختر العيار والوزن ثم اضغط على احسب لمعرفة القيمة التقديرية.
+      </div>
+    }
+  </div>
+</div>

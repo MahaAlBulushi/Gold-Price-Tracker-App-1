@@ -1,0 +1,29 @@
+<div class="bg-white rounded-2xl border border-[#c2cdff] shadow-md hover:shadow-lg transition-shadow p-6 sm:p-8">
+  <div class="overflow-x-auto rounded-xl border border-[#c2cdff]/40 shadow-inner">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr
+          class="text-right text-white"
+          style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);"
+        >
+          <th class="py-3 px-4 font-semibold">التاريخ</th>
+          <th class="py-3 px-4 font-semibold">عيار 18</th>
+          <th class="py-3 px-4 font-semibold">عيار 21</th>
+          <th class="py-3 px-4 font-semibold">عيار 22</th>
+          <th class="py-3 px-4 font-semibold">عيار 24</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (day of reversedHistory; track day.date) {
+          <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa] hover:bg-[#c2cdff]/20 transition-colors">
+            <td class="py-3 px-4 text-[#15325f] font-semibold">{{ formatDate(day.date) }}</td>
+            <td class="py-3 px-4 text-gray-600">{{ day.price18k.toFixed(3) }} ر.ع</td>
+            <td class="py-3 px-4 text-gray-600">{{ day.price21k.toFixed(3) }} ر.ع</td>
+            <td class="py-3 px-4 text-gray-600">{{ day.price22k.toFixed(3) }} ر.ع</td>
+            <td class="py-3 px-4 font-semibold text-[#1cad8d]">{{ day.price24k.toFixed(3) }} ر.ع</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

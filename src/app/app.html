@@ -1,0 +1,96 @@
+<app-header />
+
+<main class="bg-[#fafafa] min-h-screen">
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm text-[#15325f]/70">
+      <span>الرئيسية</span>
+      <span class="mx-1">/</span>
+      <span class="text-[#15325f] font-medium">أسعار الذهب في عُمان</span>
+    </nav>
+
+    <!-- Hero -->
+    <section
+      dir="rtl"
+      lang="ar"
+      class="relative overflow-hidden rounded-[24px] text-white"
+      style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);"
+    >
+      <!-- Decorative circles, kept on the left to balance the right-aligned text -->
+      <div class="absolute -top-14 -left-14 w-44 h-44 rounded-full bg-white/10"></div>
+      <div class="absolute top-12 left-10 w-20 h-20 rounded-full bg-[#c2cdff]/20 blur-sm"></div>
+
+      <div class="relative px-6 sm:px-10 lg:px-14 py-10 lg:py-12 text-right">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
+          سعر الذهب اليوم في عُمان
+        </h1>
+
+        <p class="mt-4 max-w-3xl text-base sm:text-lg leading-8 text-white/90">
+          تابع أسعار الذهب في عُمان لمختلف العيارات، واحسب قيمة الذهب بسهولة، واستعرض حركة الأسعار خلال آخر 30 يومًا.
+        </p>
+
+        <span class="inline-flex rounded-full bg-black/20 px-3 py-1 text-sm text-white mt-4">
+          تحديثات أسعار الذهب
+        </span>
+      </div>
+
+      <!-- Bottom information bar -->
+      <div class="relative border-t border-white/15 bg-black/10 px-6 sm:px-10 lg:px-14 py-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs sm:text-sm text-white/75">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-white/80"></span>
+            <span>آخر تحديث: اليوم</span>
+            <span>&bull;</span>
+            <span>السوق: عُمان</span>
+          </div>
+          <div>الأسعار المعروضة بالريال العُماني لكل جرام</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Today's gold prices -->
+  <section id="today-prices" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-[#15325f]">متوسط أسعار الذهب اليوم في عُمان</h2>
+    <p class="text-gray-500 mt-1">أسعار الذهب الحالية لمختلف العيارات بالريال العُماني لكل جرام</p>
+
+    @if (goldPrices.length === 0) {
+      <p class="mt-6 text-gray-400">لا توجد أسعار ذهب متاحة حاليًا.</p>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+        @for (gold of goldPrices; track gold.karat) {
+          <app-gold-price-card [karat]="gold.karat" [price]="gold.price" />
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Gold calculator -->
+  <section id="calculator" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h2 class="text-2xl font-bold text-[#15325f]">حاسبة الذهب</h2>
+    <p class="text-gray-500 mt-1 mb-6">اختر العيار والوزن لتقدير القيمة.</p>
+    <app-gold-calculator [goldPrices]="goldPrices" />
+  </section>
+
+  <!-- 30-day trend -->
+  <section id="trend" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h2 class="text-2xl font-bold text-[#15325f]">حركة أسعار الذهب</h2>
+    <p class="text-gray-500 mt-1 mb-6">حركة سعر الذهب خلال آخر 30 يومًا</p>
+    <app-gold-price-chart [history]="goldHistory" />
+  </section>
+
+  <!-- Price history table -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
+    <h2 class="text-2xl font-bold text-[#15325f]">سجل أسعار الذهب</h2>
+    <p class="text-gray-500 mt-1 mb-6">بيانات تجريبية لأسعار الذهب خلال آخر 30 يومًا بالريال العُماني لكل جرام</p>
+    <app-price-history [history]="goldHistory" />
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t border-[#c2cdff] py-8 text-center text-sm text-gray-500">
+  <p class="font-semibold text-[#15325f]">لوحة أسعار الذهب في عُمان</p>
+  <p class="mt-3 text-xs text-gray-400">© 2026 Maha Al Bulushi. جميع الحقوق محفوظة.</p>
+</footer>

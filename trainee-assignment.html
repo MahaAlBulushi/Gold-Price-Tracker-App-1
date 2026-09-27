@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trainee Assignment — Rebuild the Oman Gold Price Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#fafafa] text-[#15325f] antialiased">
+
+  <!-- Page header -->
+  <header class="bg-white border-b border-[#c2cdff] sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-9 h-9 rounded-full bg-[#16407b] text-white flex items-center justify-center font-bold">A</span>
+        <span class="text-lg font-bold">Your Assignment</span>
+      </div>
+      <span class="text-xs font-medium px-3 py-1 rounded-full bg-[#c2cdff] text-[#15325f]">
+        Angular + Tailwind CSS
+      </span>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden rounded-[24px] text-white"
+      style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);">
+      <div class="absolute -top-14 -right-14 w-44 h-44 rounded-full bg-white/10"></div>
+      <div class="relative px-6 sm:px-10 lg:px-14 py-10 lg:py-12">
+        <span class="inline-flex rounded-full bg-black/20 px-3 py-1 text-sm text-white mb-4">
+          Your next challenge
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-bold leading-tight">
+          Hi, welcome to your assignment 👋
+        </h1>
+        <p class="mt-4 max-w-2xl text-base sm:text-lg leading-8 text-white/90">
+          For this task, we'd like you to build the <strong>Oman Gold Price Dashboard</strong> shown below
+          entirely from scratch. Take your time to explore it, understand how it's put together, then recreate
+          it yourself with clean, reusable, well-structured code. We're excited to see how you approach it!
+        </p>
+      </div>
+    </section>
+
+    <!-- 1. Aim of the Task -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">🎯 Aim of the Task</h2>
+      <p class="mt-3 text-gray-600 leading-7">
+        This task is designed to check how well you can look at an existing user interface, break it down into
+        reusable pieces, and rebuild it using clean Angular code. By the end, you should be able to demonstrate:
+      </p>
+      <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+        <li>Reading and understanding an existing UI without a written spec</li>
+        <li>Breaking a page down into logical, reusable components</li>
+        <li>Building with Angular and styling with Tailwind CSS</li>
+        <li>Writing clean, organized, and readable code</li>
+        <li>Creating a responsive layout that works on any screen size</li>
+      </ul>
+    </section>
+
+    <!-- 2. Task Description -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">📦 Task Description</h2>
+      <p class="mt-3 text-gray-600 leading-7">
+        You'll be rebuilding the <strong>Oman Gold Price Dashboard</strong> shown below, entirely from scratch,
+        using it only as a visual and functional reference. It's an <strong>Angular</strong> single-page
+        application styled with <strong>Tailwind CSS</strong> that displays gold prices in Oman, lets users
+        calculate the value of a given weight of gold, and shows a 30-day price history in both chart and table
+        form. The interface is written in Arabic and laid out right-to-left (RTL), so keep that in mind while
+        you rebuild it.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+        <div class="rounded-xl border border-[#c2cdff] p-4 bg-white text-center">
+          <p class="text-xs text-gray-500">Framework</p>
+          <p class="text-lg font-semibold mt-1">Angular</p>
+        </div>
+        <div class="rounded-xl border border-[#c2cdff] p-4 bg-white text-center">
+          <p class="text-xs text-gray-500">Styling</p>
+          <p class="text-lg font-semibold mt-1">Tailwind CSS</p>
+        </div>
+        <div class="rounded-xl border border-[#c2cdff] p-4 bg-white text-center">
+          <p class="text-xs text-gray-500">Language / Direction</p>
+          <p class="text-lg font-semibold mt-1">Arabic (RTL)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Requirements -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">✅ Requirements</h2>
+      <p class="mt-3 text-gray-600 leading-7">Your rebuilt app must include the following functionality:</p>
+      <ul class="mt-3 space-y-2 text-gray-600 text-sm">
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Display today's gold price for each karat: 18K, 21K, 22K, and 24K</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> A gold calculator: pick a karat and enter a weight in grams, then calculate the estimated total value</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> A 30-day price trend chart, switchable between karats, with current/highest/lowest summary stats</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> A price history table listing the last 30 days for all four karats</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Navigation links that scroll to each section of the page</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> All data can be static/sample data — no real API or backend is required</li>
+      </ul>
+    </section>
+
+    <!-- 4. UI Requirements -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">🧩 UI Requirements</h2>
+      <p class="mt-3 text-gray-600 leading-7">
+        The page should follow this basic layout, top to bottom:
+      </p>
+
+      <div class="space-y-6 mt-6">
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">1. Header / Navigation</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Sticky header with logo image and site name ("الذهب العُماني" / "Omani Gold")</li>
+            <li>Navigation links to the prices, calculator, and 30-day trend sections</li>
+            <li>A small badge label on the side (e.g. "Demo data")</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">2. Hero Banner</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Large gradient banner with a breadcrumb line above it</li>
+            <li>Heading, short description paragraph, and a small pill/badge</li>
+            <li>A bottom info bar inside the banner showing "last updated" and market info</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">3. Today's Gold Prices</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Section title and subtitle</li>
+            <li>A responsive grid of <strong>price cards</strong>, one per karat</li>
+            <li>Each card shows the karat label, the price, and the currency/unit</li>
+            <li>Build one reusable "price card" component and reuse it for every karat</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">4. Gold Calculator</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>A karat dropdown (select) and a weight-in-grams number input</li>
+            <li>A "Calculate" button</li>
+            <li>After clicking, show the estimated total value in a highlighted result card</li>
+            <li>Before calculating, show a placeholder/empty state instead</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">5. 30-Day Price Trend</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Buttons to switch between karats (18K / 21K / 22K / 24K)</li>
+            <li>Three summary cards: current price, highest price, and lowest price over 30 days</li>
+            <li>A simple line chart (an SVG polyline is enough) plotting the last 30 days of prices</li>
+            <li>A small stats row comparing current price, previous price, and the change between them</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">6. Price History Table</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>A table listing 30 days of history with columns: date, 18K, 21K, 22K, 24K</li>
+            <li>Striped/alternating row colors and a horizontal scroll on small screens</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-[#c2cdff] shadow-sm p-6">
+          <h3 class="font-semibold text-lg">7. Footer</h3>
+          <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+            <li>Site name/title</li>
+            <li>Copyright line</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. Technical Requirements -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">🛠️ Technical Requirements</h2>
+      <ul class="mt-3 space-y-2 text-gray-600 text-sm">
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Build the app with <strong>Angular</strong>, styled with <strong>Tailwind CSS</strong></li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Follow a clean, organized project/folder structure</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Split the UI into reusable components (header, price card, calculator, chart, table, footer)</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Use clear, meaningful names for components, variables, and functions</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Avoid duplicating the same markup or logic — extract it into a shared component instead</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Keep styling organized and consistent using Tailwind utility classes</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Make the app responsive on desktop, tablet, and mobile</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Store sample data (prices and history) in a simple data file or service</li>
+        <li class="flex gap-2"><span class="text-[#1cad8d]">✔</span> Make sure the project builds and runs without errors</li>
+      </ul>
+    </section>
+
+    <!-- 6. Expected Deliverables -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">📁 Expected Deliverables</h2>
+      <p class="mt-3 text-gray-600 leading-7">Please submit the following:</p>
+      <ol class="mt-3 space-y-2 text-gray-600 text-sm list-decimal pr-5">
+        <li>Complete source code of your rebuilt project</li>
+        <li>A <strong>README</strong> file with clear instructions to install and run the project</li>
+        <li>A link to your Git repository</li>
+        <li>Any images/icons or other assets you used</li>
+      </ol>
+    </section>
+
+    <!-- 7. Bonus Requirements -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold">🌟 Bonus Requirements (Optional)</h2>
+      <p class="mt-3 text-gray-600 leading-7">
+        Want to go further? These are optional and not required to pass, but they're a great way to stand out:
+      </p>
+      <ul class="mt-3 space-y-1.5 text-gray-600 text-sm list-disc pr-5">
+        <li>Add a light/dark mode toggle</li>
+        <li>Add simple loading or empty states with a short animation</li>
+        <li>Add a language toggle between Arabic (RTL) and English (LTR)</li>
+      </ul>
+    </section>
+
+    <!-- 8. Evaluation Criteria -->
+    <section class="mt-12 mb-16">
+      <h2 class="text-2xl font-bold">📝 Evaluation Criteria</h2>
+      <p class="mt-3 text-gray-600 leading-7">Your submission will be reviewed based on:</p>
+      <div class="overflow-x-auto rounded-2xl border border-[#c2cdff] mt-4 bg-white">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="text-left text-white" style="background: linear-gradient(135deg, #0F3063 0%, #3F7FD1 55%, #D9D7FF 110%);">
+              <th class="py-3 px-4 font-semibold">Criteria</th>
+              <th class="py-3 px-4 font-semibold">What we're looking for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Completeness</td>
+              <td class="py-3 px-4 text-gray-600">All required sections and components are present</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Design similarity</td>
+              <td class="py-3 px-4 text-gray-600">Layout, spacing, colors, and typography match the reference closely</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Code structure & readability</td>
+              <td class="py-3 px-4 text-gray-600">Clean, organized, easy-to-follow code</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Component reusability</td>
+              <td class="py-3 px-4 text-gray-600">Shared UI is built once and reused, not duplicated</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Responsive design</td>
+              <td class="py-3 px-4 text-gray-600">Works well on desktop, tablet, and mobile</td>
+            </tr>
+            <tr class="border-b border-[#c2cdff]/30 odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Functionality</td>
+              <td class="py-3 px-4 text-gray-600">Calculator, karat switching, and chart/table all work correctly</td>
+            </tr>
+            <tr class="odd:bg-white even:bg-[#fafafa]">
+              <td class="py-3 px-4 font-medium">Overall quality</td>
+              <td class="py-3 px-4 text-gray-600">Runs without errors and feels polished</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-[#c2cdff] py-8 text-center text-sm text-gray-500">
+    <p class="font-semibold">Your Assignment — Rebuild the Oman Gold Price Dashboard</p>
+    <p class="mt-2 text-xs text-gray-400">Good luck! Reach out to your mentor if anything is unclear.</p>
+  </footer>
+
+</body>
+</html>
